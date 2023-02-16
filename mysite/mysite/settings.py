@@ -75,9 +75,16 @@ WSGI_APPLICATION = "mysite.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # engine: mysql
+        'NAME' : 'MyDB', # DB Name
+        'USER' : 'admin', # DB User
+        'PASSWORD' :'Junghanjoon980504', # Password
+        'HOST': 'database-1.cd0beaez3lwz.ap-northeast-2.rds.amazonaws.com', # 생성한 데이터베이스 엔드포인트
+        'PORT': '3306', # 데이터베이스 포트
+        'OPTIONS':{
+            'init_command' : "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
 
