@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WebSocket Example</title>
+</head>
+<body>
+  <h1>WebSocket Example</h1>
+
+  <div id="messages"></div>
+
+  <script>
+    const socket = new WebSocket('ws://localhost:8000/ws/snmp'); // WebSocket 생성
+
+    socket.onopen = function() {
+      console.log('WebSocket connection established');
+    }
+
+    socket.onmessage = function(event) {
+      const messagesDiv = document.getElementById('messages');
+      messagesDiv.innerHTML += `<p>${event.data}</p>`; // 받은 메시지를 화면에 출력
+    }
+
+    socket.onclose = function(event) {
+      console.log(`WebSocket connection closed with code ${event.code}`);
+    }
+  </script>
+</body>
+</html>
