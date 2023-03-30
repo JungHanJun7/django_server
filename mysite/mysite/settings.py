@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-)=20igl*ukbdu#c%m3$hp-hp1&!y%ae_f)v$lv*1*=!fh#dy+g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
+ALLOWED_HOSTS = ['*',
     ".ap-northeast-2.compute.amazonaws.com",
     ".securitycap.site",
 ]
@@ -40,7 +40,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'main'
+    'main',
+    'channels',
+    'rest_framework',
+    'pogba'
+
 ]
 
 MIDDLEWARE = [
@@ -73,7 +77,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mysite.wsgi.application"
 
+ASGI_APPLICATION = 'mysite.pogba.routing.application'
 
+#ASGI_APPLICATION = 'mysite.pogba.routing.websocket_urlpatterns'
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [("redis", 6379)],
+#         },
+#     },
+# }
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
