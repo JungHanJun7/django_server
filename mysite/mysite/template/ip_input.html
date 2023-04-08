@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>securitycap : input IP</title>
+</head>
+<body>
+    <div class="login-wrapper center">
+        <h2>IP입력</h2>
+        <form method="post" action="/pogba/socket/" id="login-form">
+          <input type = "hidden" {% csrf_token %}>
+          <input type="text" name="public_ip" placeholder="public" />
+          <input type="text" name="private_ip" placeholder="private" />
+          <input type="submit" value="입력" />
+    </div>
+</body>
+</html>

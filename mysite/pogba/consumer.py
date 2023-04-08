@@ -15,14 +15,19 @@ class SnmpConsumer(WebsocketConsumer):
         PORT = 161
         COMMUNITY = "public"  # 접속할 장비의 community 정보 입력할 것
 
+        result = ''
         engine = SnmpEngine()
         host = UdpTransportTarget((HOST, PORT))
         community = CommunityData(COMMUNITY, mpModel=1)
-        identity_obj_list = [
-            ObjectType(ObjectIdentity(text_data)),
-            #ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysName', 0))
-        ]
+        # identity_obj_list = [
+        #     ObjectType(ObjectIdentity(text_data.split(',')[0])),
+        #     ObjectType(ObjectIdentity(text_data.split(',')[1])),
+        # ]
+        identity_obj_list = []
 
+        for i in text_data.split(',') :
+            identity_obj_list.append(ObjectType(ObjectIdentity(i)))
+            
         for identity_obj in identity_obj_list:
             iterator = getCmd(engine, community, host, ContextData(), identity_obj)
             errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
@@ -35,5 +40,7 @@ class SnmpConsumer(WebsocketConsumer):
                 else:
                     for varBind in varBinds:  # SNMP response contents
                         print(' = '.join([x.prettyPrint() for x in varBind]))
-                        # self.send(text_data=str(varBinds[-1]))
-                        self.send(text_data)
+                        string = str(varBinds[-1]).split()[-1]
+                        result = result + string + ','
+        result = result[:-1]
+        self.send(text_data=result)

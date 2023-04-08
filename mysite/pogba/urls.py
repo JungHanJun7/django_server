@@ -5,5 +5,7 @@ urlpatterns = [
     path("hello/", helloAPI),
     path("<int:id>/", randomPogba),
     path("hello2/", postTest),
-    path("socket/",testing)
+    path("socket/",testing),
+    # path("cash/<int:message_id>/", get_cached_message)
 ]
+

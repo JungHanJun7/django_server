@@ -22,6 +22,9 @@ urlpatterns = [
     path('', main_views.index, name="index"),
     path('admin/', admin.site.urls),
     path('pogba/', include('pogba.urls')),
+    path('kante/', include('kante.urls')),
     #path('test/', snmp_view),
     path('snmp/', snmp_info)
 ]
+
+

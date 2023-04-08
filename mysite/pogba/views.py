@@ -3,8 +3,14 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Pogba
 from .serializers import PogbaSerializer
-import random
 from pysnmp.hlapi import *
+
+from django.core.cache import cache
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+#from .models import Message
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 @api_view(['GET'])
@@ -49,17 +55,66 @@ def randomPogba(request, id) :
     # serializer = PogbaSerializer(randomPogbas, many=True)
     # return Response(serializer.data)
 
-@api_view(['POST'])
+# @api_view(['POST'])
+# def postTest(request):
+#     public_ip = request.data.get('Public_IP')
+#     private_ip = request.data.get('Private_IP')
+#     data={
+#         'public_ip':public_ip,
+#         'private_ip': private_ip,
+#     }
+#     render(request, "ip_input.html")
+#     return Response(data) 
+
+@csrf_exempt
 def postTest(request):
-    title = request.data.get('title')
-    body = request.data.get('body')
-    answer = request.data.get('answer')
-    data={
-        'title':title,
-        'body': body,
-        'answer':answer
-    }
-    return Response(data) 
+    if request.method == 'GET':
+        # GET 요청을 처리하는 코드
+        return render(request, "ip_input.html")
+
+    elif request.method == 'POST':
+        # POST 요청을 처리하는 코드
+        public_ip = request.data.get('public_ip')
+        private_ip = request.data.get('private_ip')
+        data={
+            'public_ip':public_ip,
+            'private_ip': private_ip,
+        }
+        return render(request, "./")
+        # return Response(data) 
+
+
+    else:
+        # 지원되지 않는 요청 메서드에 대한 응답
+        return HttpResponse(status=405)
+
+
 
 def testing(request):
     return render(request, "socket_test.html")
+
+# @api_view(['GET'])
+# def get_cached_message(request, message_id):
+#     cached_message = cache.get(f'message_{message_id}')
+#     if cached_message is not None:
+#         return JsonResponse({'status': 'success', 'public_ip': cached_message.public_ip, 'private_ip': cached_message.private_ip})
+#     else:
+#         return JsonResponse({'status': 'error', 'message': 'Data not found in cache'})
+
+# @api_view(['GET'])
+# def postTest(request):
+#     # public_ip = request.data.get('Public_IP')
+#     # private_ip = request.data.get('Private_IP')
+#     public_ip = '127.0.0.1'
+#     private_ip = '127.0.0.2'
+#     data ={
+#         'public_ip':public_ip,
+#         'private_ip':private_ip
+#     }
+
+#     if data is not None:
+#         response = JsonResponse({'status': 'success', 'message': 'Data saved in cookie'})
+#         response.set_cookie('cookie_name', data, max_age=60 * 60 * 24)  # 쿠키 유효 시간을 1일로 설정
+#         return response
+#     else:
+#         return JsonResponse({'status': 'error', 'message': 'No data provided'})
