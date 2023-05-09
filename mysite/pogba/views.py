@@ -12,39 +12,36 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-# Create your views here.
-@api_view(['GET'])
-def helloAPI(request) :
-    return Response("hello world!")
-
-@api_view(['GET'])
-def randomPogba(request, id) :
-    HOST = "192.168.0.9"   # 접속할 장비의 IP 입력할 것
-    PORT = 161
-    COMMUNITY = "public"  # 접속할 장비의 community 정보 입력할 것
 
 
-    engine = SnmpEngine()
-    host = UdpTransportTarget((HOST, PORT))
-    community = CommunityData(COMMUNITY, mpModel=1)
-    identity_obj_list = [
-            ObjectType(ObjectIdentity('1.3.6.1.2.1.6.6.0')),
-            #ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysName', 0))
-    ]
+# @api_view(['GET'])
+# def randomPogba(request, id) :
+#     HOST = "192.168.0.9"   # 접속할 장비의 IP 입력할 것
+#     PORT = 161
+#     COMMUNITY = "public"  # 접속할 장비의 community 정보 입력할 것
 
-    for identity_obj in identity_obj_list:
-        iterator = getCmd(engine, community, host, ContextData(), identity_obj)
-        errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
-        if errorIndication:  # SNMP engine errors
-            print(errorIndication)
-        else:
-            if errorStatus:  # SNMP agent errors
-                print('%s at %s' % (errorStatus.prettyPrint(),
-                    varBinds[int(errorIndex)-1] if errorIndex else '?'))
-            else:
-                for varBind in varBinds:  # SNMP response contents
-                    print(' = '.join([x.prettyPrint() for x in varBind]))
-                    return Response(str(varBinds[-1]))
+
+#     engine = SnmpEngine()
+#     host = UdpTransportTarget((HOST, PORT))
+#     community = CommunityData(COMMUNITY, mpModel=1)
+#     identity_obj_list = [
+#             ObjectType(ObjectIdentity('1.3.6.1.2.1.6.6.0')),
+#             #ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysName', 0))
+#     ]
+
+#     for identity_obj in identity_obj_list:
+#         iterator = getCmd(engine, community, host, ContextData(), identity_obj)
+#         errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
+#         if errorIndication:  # SNMP engine errors
+#             print(errorIndication)
+#         else:
+#             if errorStatus:  # SNMP agent errors
+#                 print('%s at %s' % (errorStatus.prettyPrint(),
+#                     varBinds[int(errorIndex)-1] if errorIndex else '?'))
+#             else:
+#                 for varBind in varBinds:  # SNMP response contents
+#                     print(' = '.join([x.prettyPrint() for x in varBind]))
+#                     return Response(str(varBinds[-1]))
 
     # data = {
     #     'data':id
@@ -72,15 +69,15 @@ def postTest(request):
         # GET 요청을 처리하는 코드
         return render(request, "ip_input.html")
 
-    elif request.method == 'POST':
-        # POST 요청을 처리하는 코드
-        public_ip = request.data.get('public_ip')
-        private_ip = request.data.get('private_ip')
-        data={
-            'public_ip':public_ip,
-            'private_ip': private_ip,
-        }
-        return render(request, "./")
+    # elif request.method == 'POST':
+    #     # POST 요청을 처리하는 코드
+    #     public_ip = request.data.get('public_ip')
+    #     private_ip = request.data.get('private_ip')
+    #     data={
+    #         'public_ip':public_ip,
+    #         'private_ip': private_ip,
+    #     }
+    #     return render(request, "./")
         # return Response(data) 
 
 
@@ -90,8 +87,16 @@ def postTest(request):
 
 
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 def testing(request):
-    return render(request, "socket_test.html")
+    if request.method == 'POST':
+        public_ip = request.POST.get('public_ip')
+        private_ip = request.POST.get('private_ip')
+        initial_data = {'public_ip': public_ip, 'private_ip': private_ip}
+        return render(request, "socket_test.html", initial_data)
+
 
 # @api_view(['GET'])
 # def get_cached_message(request, message_id):

@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('pogba/', include('pogba.urls')),
     path('kante/', include('kante.urls')),
+    path('dataapi/', include('dataapi.urls')),
     #path('test/', snmp_view),
     path('snmp/', snmp_info)
 ]

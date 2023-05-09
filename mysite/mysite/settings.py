@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*',
 
 INSTALLED_APPS = [
     'channels',
+    'dataapi',
     'pogba',
     'kante',
     "django.contrib.admin",

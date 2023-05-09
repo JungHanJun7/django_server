@@ -91,17 +91,24 @@
 		}
     .box-1 {
 			flex-grow: 1;
+      flex-direction: row;
+      display: flex;
 		}
 		
 		.box-2 {
 			flex-grow: 2;
+      flex-direction: row;
+      display: flex;
+		}
+    .box-3 {
+			flex-grow: 1;
 		}
     </style>
   </head>
   <body>
     <ul>
       <li><a class="active" href="../html/snmp.html">SNMP</a></li>
-      <li><a href="../html/snort.html">SNORT</a></li>
+      <li><a href="/kante/rules">SNORT</a></li>
       <li><a href="../html/alert.html">ALERT</a></li>
     </ul>
 
@@ -119,6 +126,8 @@
               socket.onopen = function (event) {
                 console.log("Connected to the WebSocket server.");
 
+                sendIP();
+
                 // 5초마다 웹소켓으로 메시지를 보내는 함수를 실행합니다.
                 setInterval(function () {
                   sendMessage_TCP();
@@ -134,27 +143,47 @@
               socket.onclose = function (event) {
                 console.log("Disconnected from the WebSocket server.");
               };
+
+
             
               // 메시지를 보내는 함수를 정의합니다.
+              function sendIP() {
+                var public_ip = "{{ public_ip }}";
+                var private_ip = "{{ private_ip }}";
+                var message = public_ip + ',' + private_ip;
+                console.log("Sending message to server:", message);
+                socket.send(message);
+              }
+
               function sendMessage_TCP() {
                 var message = "1.3.6.1.2.1.6.10.0,1.3.6.1.2.1.6.11.0";
                 console.log("Sending message to server:", message);
                 socket.send(message);
               }
 
+              let prevData = null;
+
               function updateChartData(newData) {
                 d = newData.split(',')
-                if (myChart.data.labels.length >= 7) {
-                    myChart.data.datasets[0].data.unshift(); // Remove the first data point
-                    myChart.data.datasets[1].data.unshift(); // Remove the first data point
+                if (prevData === null) {
+                  prevData = d;
+                  return;
                 }
-                myChart.data.datasets[0].data.unshift(d[0]);
-                myChart.data.datasets[1].data.unshift(d[1]);
-                console.log(newData);
-                
-                myChart.update(); // Update the chart with the new data
-              }
 
+                if (myChart.data.labels.length >= 7) {
+                    myChart.data.datasets[0].data.pop();
+                    myChart.data.datasets[1].data.pop(); 
+                }
+                
+                myChart.data.datasets[0].data.unshift(d[0]-prevData[0]);
+                myChart.data.datasets[1].data.unshift(d[1]-prevData[1]); 
+
+                prevData = d;
+
+                console.log(newData);
+
+                myChart.update();
+              }
 
               const ctx = document.getElementById('myChart');
               const myChart = new Chart(ctx, {
@@ -182,8 +211,9 @@
                   scales: {
                     yAxes: [{
                       ticks: {
-                        min: 800000,
-                        max: 1000000
+                        max: null,
+                        min: null,
+                        stepSize: 10
                       }
                     }]
                   }
@@ -224,18 +254,29 @@
                 socket.send(message);
               }
 
+              let prevData2 = null;
+
               function updateChartUDPData(newData) {
                 d = newData.split(',')
-                if (myChart2.data.labels.length >= 7) {
-                    myChart2.data.datasets[0].data.unshift(); // Remove the first data point
-                    myChart2.data.datasets[1].data.unshift(); // Remove the first data point
+                if (prevData2 === null) {
+                  prevData2 = d;
+                  return;
                 }
-                myChart2.data.datasets[0].data.unshift(d[0]);
-                myChart2.data.datasets[1].data.unshift(d[1]);      
-                console.log(newData);
+                if (myChart2.data.labels.length >= 7) {
+                    myChart2.data.datasets[0].data.pop();
+                    myChart2.data.datasets[1].data.pop(); 
+                }
                 
-                myChart2.update(); // Update the chart with the new data
+                myChart2.data.datasets[0].data.unshift(d[0]-prevData2[0]);
+                myChart2.data.datasets[1].data.unshift(d[1]-prevData2[1]); 
+
+                prevData2 = d;
+
+                console.log(newData);
+
+                myChart2.update();
               }
+
               const ctx2 = document.getElementById('myChart2');
               const myChart2 = new Chart(ctx2, {
                 type: 'line',
@@ -262,8 +303,9 @@
                   scales: {
                     yAxes: [{
                       ticks: {
-                        min: 600000,
-                        max: 800000
+                        min: null,
+                        max: null,
+                        stepSize: 10
                       }
                     }]
                   }
@@ -304,17 +346,28 @@
                 socket.send(message);
               }
 
+              let prevData3 = null;
+
               function updateChartICMPData(newData) {
                 d = newData.split(',')
-                if (myChart3.data.labels.length >= 7) {
-                    myChart3.data.datasets[0].data.unshift(); // Remove the first data point
-                    myChart3.data.datasets[1].data.unshift(); // Remove the first data point
+                if (prevData3 === null) {
+                  prevData3 = d;
+                  return;
                 }
-                myChart3.data.datasets[0].data.unshift(d[0]);
-                myChart3.data.datasets[1].data.unshift(d[1]);      
-                console.log(newData);
+
+                if (myChart3.data.labels.length >= 7) {
+                    myChart3.data.datasets[0].data.pop();
+                    myChart3.data.datasets[1].data.pop(); 
+                }
                 
-                myChart3.update(); // Update the chart with the new data
+                myChart3.data.datasets[0].data.unshift(d[0]-prevData3[0]);
+                myChart3.data.datasets[1].data.unshift(d[1]-prevData3[1]); 
+
+                prevData3 = d;
+
+                console.log(newData);
+
+                myChart3.update();
               }
               const ctx3 = document.getElementById('myChart3');
               const myChart3 = new Chart(ctx3, {
@@ -342,8 +395,9 @@
                   scales: {
                     yAxes: [{
                       ticks: {
-                        min: 200,
-                        max: 800
+                        min: null,
+                        max: null,
+                        stepSize: 10
                       }
                     }]
                   }
@@ -355,238 +409,340 @@
       </div>
       <div class="container">
         <div class="box box-2">
-          <script src="https://code.highcharts.com/highcharts.js"></script>
-          <script src="https://code.highcharts.com/highcharts-more.js"></script>
-            <style>
-              .highcharts-figure,
-              .highcharts-data-table table {
-                  min-width: 200px;
-                  max-width: 300px;
-                  margin: 1em auto;
+          <canvas id="myChart4"></canvas>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script>
+            document.addEventListener("DOMContentLoaded", function (){
+              // 웹소켓 연결을 설정합니다.
+              var socket = new WebSocket("ws://127.0.0.1:8000/ws/snmp/");
+
+              socket.onopen = function (event) {
+                console.log("Connected to the WebSocket server.");
+
+                // 5초마다 웹소켓으로 메시지를 보내는 함수를 실행합니다.
+                setInterval(function () {
+                  sendMessage_Network();
+                }, 2000);
+              };
+            
+              socket.onmessage = function (event) {
+                console.log("Received message from server:", event.data);
+
+                updateChartNetworkData(event.data);
+              };
+            
+              socket.onclose = function (event) {
+                console.log("Disconnected from the WebSocket server.");
+              };
+            
+              // 메시지를 보내는 함수를 정의합니다.
+              function sendMessage_Network() {
+                var message = "1.3.6.1.2.1.2.2.1.5.11,1.3.6.1.2.1.2.2.1.16.11";
+                console.log("Sending message to server:", message);
+                socket.send(message);
               }
-              </style>
-            <div class = 'highcharts-figure' id="myChart4">
-              <script>
-                  Highcharts.chart('myChart4', {
-                  chart: {
-                      type: 'gauge',
-                      plotBackgroundColor: null,
-                      plotBackgroundImage: null,
-                      plotBorderWidth: 0,
-                      plotShadow: false,
-                      height: '70%'
-                  },
-      
-                  title: {
-                      text: 'Speedometer'
-                  },
-      
-                  pane: {
-                      startAngle: -90,
-                      endAngle: 89.9,
-                      background: null,
-                      center: ['50%', '75%'],
-                      size: '110%'
-                  },
-      
-                  // the value axis
-                  yAxis: {
-                      min: 0,
-                      max: 200,
-                      tickPixelInterval: 72,
-                      tickPosition: 'inside',
-                      tickColor: Highcharts.defaultOptions.chart.backgroundColor || '#FFFFFF',
-                      tickLength: 20,
-                      tickWidth: 2,
-                      minorTickInterval: null,
-                      labels: {
-                          distance: 20,
-                          style: {
-                              fontSize: '14px'
-                          }
-                      },
-                      plotBands: [{
-                          from: 0,
-                          to: 120,
-                          color: '#55BF3B', // green
-                          thickness: 20
-                      }, {
-                          from: 120,
-                          to: 160,
-                          color: '#DDDF0D', // yellow
-                          thickness: 20
-                      }, {
-                          from: 160,
-                          to: 200,
-                          color: '#DF5353', // red
-                          thickness: 20
-                      }]
-                  },
-      
-                  series: [{
-                      name: 'Speed',
-                      data: [80],
-                      tooltip: {
-                          valueSuffix: ' Mbps'
-                      },
-                      dataLabels: {
-                          format: '{y} Mbps',
-                          borderWidth: 0,
-                          color: (
-                              Highcharts.defaultOptions.title &&
-                              Highcharts.defaultOptions.title.style &&
-                              Highcharts.defaultOptions.title.style.color
-                          ) || '#333333',
-                          style: {
-                              fontSize: '16px'
-                          }
-                      },
-                      dial: {
-                          radius: '80%',
-                          backgroundColor: 'gray',
-                          baseWidth: 12,
-                          baseLength: '0%',
-                          rearLength: '0%'
-                      },
-                      pivot: {
-                          backgroundColor: 'gray',
-                          radius: 6
-                      }
-      
-                  }]
-      
-                  });
-                  // Add some life
-                  // setInterval(() => {
-                  // const chart = Highcharts.charts[0];
-                  // if (chart && !chart.renderer.forExport) {
-                  //     const point = chart.series[0].points[0],
-                  //         inc = Math.round((Math.random() - 0.5) * 20);
-      
-                  //     let newVal = point.y + inc;
-                  //     if (newVal < 0 || newVal > 200) {
-                  //         newVal = point.y - inc;
-                  //     }
-      
-                  //     point.update(newVal);
-                  // }
-      
-                  // }, 3000);
-                  document.addEventListener("DOMContentLoaded", function (){
-                  // 웹소켓 연결을 설정합니다.
-                  var socket = new WebSocket("ws://127.0.0.1:8000/ws/snmp/");
 
-                  socket.onopen = function (event) {
-                    console.log("Connected to the WebSocket server.");
+              function updateChartNetworkData(newData) {
+                d = newData.split(',')
 
-                    // 5초마다 웹소켓으로 메시지를 보내는 함수를 실행합니다.
-                    setInterval(function () {
-                      sendMessage_Speed();
-                    }, 2000);
-                  };
+                var BandwidthP = parseInt(d[1]) / (parseInt(d[0]) + parseInt(d[1])) * 100;
+                var messagesDiv = document.getElementById("BandwidthP");
+                messagesDiv.innerHTML = "<p>" + BandwidthP.toFixed(2)+ "%" + "</p>";
+
+                myChart4.data.datasets[0].data[0] = d[0];
+                myChart4.data.datasets[0].data[1] = d[1];
+                console.log(newData);
                 
-                  socket.onmessage = function (event) {
-                    console.log("Received message from server:", event.data);
-
-                    updateChartSpeedData(event.data);
-                  };
-                
-                  socket.onclose = function (event) {
-                    console.log("Disconnected from the WebSocket server.");
-                  };
-                  function sendMessage_Speed() {
-                    var message = "1.3.6.1.2.1.2.2.1.16.11,1.3.6.1.2.1.2.2.1.10.11";
-                    console.log("Sending message to server:", message);
-                    socket.send(message);
-                  }
-
-                  let prevInOctets = 0;
-                  let prevOutOctets = 0;
-                  let prevTime = 0;
-
-                  function updateChartSpeedData(newData) {
-                    // // 쉼표를 기준으로 문자열을 분리하여 배열에 저장합니다.
-                    // var dataArr = newData.split(",");
-
-                    // // 첫 번째 데이터는 ifInOctets 값입니다.
-                    // var ifInOctets = parseInt(dataArr[0]);
-
-                    // // 두 번째 데이터는 ifOutOctets 값입니다.
-                    // var ifOutOctets = parseInt(dataArr[1]);
-
-                    // // ifInOctets와 ifOutOctets 값을 이용해 속도를 계산합니다.
-                    // var speed = (ifInOctets + ifOutOctets) * 8 / 2000;
-
-                    // // 속도 값을 차트에 반영합니다.
-                    // Highcharts.charts[0].series[0].points[0].update(Math.round(speed));
-                    const data = newData.split(",");
-                    const inOctets = parseInt(data[0]);
-                    const outOctets = parseInt(data[1]);
-                    const time = Date.now();
-
-                    const timeDiff = (time - prevTime) / 1000; // in seconds
-                    const inSpeed = (inOctets - prevInOctets) / timeDiff;
-                    const outSpeed = (outOctets - prevOutOctets) / timeDiff;
-
-                    var speed = (inSpeed + outSpeed) * 8 / 2000 / 1000;
-                    
-                    if (speed != 0){
-                      Highcharts.charts[0].series[0].points[0].update(Math.round(speed));
-                      
-                      // Update the previous data
-                      prevInOctets = inOctets;
-                      prevOutOctets = outOctets;
-                      prevTime = time;
-                      prevspeed = speed;
+                myChart4.update(); // Update the chart with the new data
+              }
+              const ctx4 = document.getElementById('myChart4');
+              const myChart4 = new Chart(ctx4, {
+                  type: 'pie',
+                  data: {
+                    labels: ['FullBandwidth','BandwidthUsed'],
+                    datasets: [{
+                      label: "Bandwidth",
+                      backgroundColor: ["#3e95cd", "#8e5ea2"],
+                      data: [0,0]
+                    }]
+                  },
+                  options: {
+                    title: {
+                      display: true,
+                      text: 'FullBandwidth vs BandwidthUsed'
                     }
                   }
-                });
-              </script>
+              });
+            });
+          </script>
+            <div>
+              <span id="Bandwidth">Bandwidth rate</br></span>
+              <span id="BandwidthP"></span>
+            </div>
           </div>
-        </div>
         <div class="box box-2">
           <canvas id="myChart5"></canvas>
           <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
           <script>
-            const ctx5 = document.getElementById('myChart5');
-            const myChart5 = new Chart(ctx5, {
-              type: 'doughnut',
-              data: {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                datasets: [{
-                  label: 'My First Dataset',
-                  data: [12, 19, 3, 5, 2, 3],
-                  backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)',
-                    'rgb(75, 192, 192)',
-                    'rgb(153, 102, 255)',
-                    'rgb(255, 159, 64)'
-                  ],
-                  hoverOffset: 4
-                }]
-              },
-              options: {
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: 'top',
-                  },
-                  title: {
-                    display: true,
-                    text: 'Chart.js Doughnut Chart'
-                  }
-                }
+            document.addEventListener("DOMContentLoaded", function (){
+              // 웹소켓 연결을 설정합니다.
+              var socket = new WebSocket("ws://127.0.0.1:8000/ws/snmp/");
+
+              socket.onopen = function (event) {
+                console.log("Connected to the WebSocket server.");
+
+                // 5초마다 웹소켓으로 메시지를 보내는 함수를 실행합니다.
+                setInterval(function () {
+                  sendMessage_Err();
+                }, 2000);
+              };
+            
+              socket.onmessage = function (event) {
+                console.log("Received message from server:", event.data);
+
+                updateChartErrData(event.data);
+              };
+            
+              socket.onclose = function (event) {
+                console.log("Disconnected from the WebSocket server.");
+              };
+            
+              // 메시지를 보내는 함수를 정의합니다.
+              function sendMessage_Err() {
+                var message = "1.3.6.1.2.1.5.1.0,1.3.6.1.2.1.5.2.0,1.3.6.1.2.1.6.10.0,1.3.6.1.2.1.6.14.0";
+                console.log("Sending message to server:", message);
+                socket.send(message);
               }
+
+              function updateChartErrData(newData) {
+                d = newData.split(',')
+
+                InSegs = d[0] + d[2];
+                ErrSegs = d[1] + d[3];
+
+                var TotalErrP = parseInt(ErrSegs) / (parseInt(InSegs) + parseInt(ErrSegs)) * 100;
+                var messagesDiv = document.getElementById("TotalErrP");
+                messagesDiv.innerHTML = "<p>" + TotalErrP.toFixed(2)+ "%" + "</p>";
+
+                myChart5.data.datasets[0].data[0] = InSegs;
+                myChart5.data.datasets[0].data[1] = ErrSegs;
+                console.log(newData);
+                
+                myChart5.update(); // Update the chart with the new data
+              }
+              const ctx5 = document.getElementById('myChart5');
+              const myChart5 = new Chart(ctx5, {
+                  type: 'pie',
+                  data: {
+                    labels: ['InSegs','InSegsErr'],
+                    datasets: [{
+                      label: "Error rate",
+                      backgroundColor: ["#3e95cd", "#8e5ea2"],
+                      data: [0,0]
+                    }]
+                  },
+                  options: {
+                    title: {
+                      display: true,
+                      text: 'InSegs vs InSegsErr'
+                    }
+                  }
+              });
             });
           </script>
+          <div>
+            <span id="TotalErr">TotalError rate</br></span>
+            <span id="TotalErrP"></span>
+          </div>
         </div>
       </div>
       <div class="container">
-        <div class="box box-1">Box 6</div>
-        <div class="box box-1">Box 7</div>
-        <div class="box box-1">Box 8</div>
+        <div class="box box-1">
+          <canvas id="myChart6"></canvas>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script>
+            document.addEventListener("DOMContentLoaded", function (){
+              // 웹소켓 연결을 설정합니다.
+              var socket = new WebSocket("ws://127.0.0.1:8000/ws/snmp/");
+
+              socket.onopen = function (event) {
+                console.log("Connected to the WebSocket server.");
+
+                // 5초마다 웹소켓으로 메시지를 보내는 함수를 실행합니다.
+                setInterval(function () {
+                  sendMessage_TCPErr();
+                }, 2000);
+              };
+              
+              socket.onmessage = function (event) {
+                console.log("Received message from server:", event.data);
+
+                updateChartTCPErrData(event.data);
+              };
+            
+              socket.onclose = function (event) {
+                console.log("Disconnected from the WebSocket server.");
+              };
+            
+              // 메시지를 보내는 함수를 정의합니다.
+              function sendMessage_TCPErr() {
+                var message = "1.3.6.1.2.1.6.10.0,1.3.6.1.2.1.6.14.0";
+                console.log("Sending message to server:", message);
+                socket.send(message);
+              }
+
+              function updateChartTCPErrData(newData) {
+                d = newData.split(',')
+                
+                TCPErrP = parseInt(d[1]) / (parseInt(d[0]) + parseInt(d[1])) * 100;
+                var messagesDiv = document.getElementById("TCPErrP");
+                messagesDiv.innerHTML = "<p>" + TCPErrP.toFixed(2) + "%" + "</p>";
+
+                myChart6.data.datasets[0].data[0] = d[0];
+                myChart6.data.datasets[0].data[1] = d[1];
+                console.log(newData);
+
+                
+                myChart6.update(); // Update the chart with the new data
+              }
+              const ctx6 = document.getElementById('myChart6');
+              const myChart6 = new Chart(ctx6, {
+                  type: 'pie',
+                  data: {
+                    labels: ['tcpInSegs','tcpInSegsErr'],
+                    datasets: [{
+                      label: "Error rate",
+                      backgroundColor: ["#3e95cd", "#8e5ea2"],
+                      data: [0,0]
+                    }]
+                  },
+                  options: {
+                    title: {
+                      display: true,
+                      text: 'tcpInSegs vs tcpInSegsErr'
+                    }
+                  }
+              });
+            });
+          </script>
+          <div>
+            <span id="TCPErr">TCP Error rate</br></span>
+            <span id="TCPErrP"></span>
+          </div>
+        </div>
+        <div class="box box-3">
+          <script>
+            document.addEventListener("DOMContentLoaded", function (){
+              // 웹소켓 연결을 설정합니다.
+              var socket = new WebSocket("ws://127.0.0.1:8000/ws/snmp/");
+
+              socket.onopen = function (event) {
+                console.log("Connected to the WebSocket server.");
+
+                // 5초마다 웹소켓으로 메시지를 보내는 함수를 실행합니다.
+                setTimeout(function () {
+                  sendMessage_MyPC();
+                },2000);
+              };
+              
+              socket.onmessage = function (event) {
+                PCInform = event.data.split(',');
+                console.log("Received message from server:", PCInform[0]);
+                console.log("Received message from server:", PCInform[1]);
+
+                var messagesDiv = document.getElementById("MyPC");
+                messagesDiv.innerHTML += "<p>" + PCInform[0] + "</p>";
+                var messagesDiv2 = document.getElementById("MyAddress");
+                messagesDiv2.innerHTML += "<p>" + PCInform[1] + "</p>";
+              };
+            
+              socket.onclose = function (event) {
+                console.log("Disconnected from the WebSocket server.");
+              };
+            
+              // 메시지를 보내는 함수를 정의합니다.
+              function sendMessage_MyPC() {
+                var message = "1.3.6.1.2.1.1.5.0,1.3.6.1.2.1.1.6.0";
+                console.log("Sending message to server:", message);
+                socket.send(message);
+              }
+            });
+          </script>
+          <div id="MyPC">My PC : </div>
+          <div id="MyAddress">My Address : </div>
+        </div>
+        <div class="box box-1">
+          <canvas id="myChart8"></canvas>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script>
+            document.addEventListener("DOMContentLoaded", function (){
+              // 웹소켓 연결을 설정합니다.
+              var socket = new WebSocket("ws://127.0.0.1:8000/ws/snmp/");
+
+              socket.onopen = function (event) {
+                console.log("Connected to the WebSocket server.");
+
+                // 5초마다 웹소켓으로 메시지를 보내는 함수를 실행합니다.
+                setInterval(function () {
+                  sendMessage_ICMPErr();
+                }, 2000);
+              };
+            
+              socket.onmessage = function (event) {
+                console.log("Received message from server:", event.data);
+
+                updateChartICMPErrData(event.data);
+              };
+            
+              socket.onclose = function (event) {
+                console.log("Disconnected from the WebSocket server.");
+              };
+            
+              // 메시지를 보내는 함수를 정의합니다.
+              function sendMessage_ICMPErr() {
+                var message = "1.3.6.1.2.1.5.1.0,1.3.6.1.2.1.5.2.0";
+                console.log("Sending message to server:", message);
+                socket.send(message);
+              }
+
+              function updateChartICMPErrData(newData) {
+                d = newData.split(',')
+
+                ICMPErrP = parseInt(d[1]) / (parseInt(d[0]) + parseInt(d[1])) * 100;
+                var messagesDiv = document.getElementById("ICMPErrP");
+                messagesDiv.innerHTML = "<p>" + ICMPErrP.toFixed(2) + "%" + "</p>";
+
+                myChart8.data.datasets[0].data[0] = d[0];
+                myChart8.data.datasets[0].data[1] = d[1];
+                console.log(newData);
+                
+                myChart8.update(); // Update the chart with the new data
+              }
+              const ctx8 = document.getElementById('myChart8');
+              const myChart8 = new Chart(ctx8, {
+                  type: 'pie',
+                  data: {
+                    labels: ['icmpInSegs','icmpInSegsErr'],
+                    datasets: [{
+                      label: "Error rate",
+                      backgroundColor: ["#3e95cd", "#8e5ea2"],
+                      data: [0,0]
+                    }]
+                  },
+                  options: {
+                    title: {
+                      display: true,
+                      text: 'ICMPInSegs vs ICMPInSegsErr'
+                    }
+                  }
+              });
+            });
+          </script>
+          <div>
+            <span>ICMP Error rate</span>
+            <span id="ICMPErrP"></span>
+          </div>
+        </div>
       </div>
     </div>
   </body>

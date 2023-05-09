@@ -1,9 +1,412 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
 	<title>Test Page</title>
 </head>
 <body>
-	<h1>{{ value }}</h1>
+	<h1>user rule :{{ user_rule }}</h1>
+	<h2>default_rule :{{ default_rule }}</h2>
 </body>
+</html> -->
+<!-- <!DOCTYPE html>
+<html>
+    <body>
+        {{value}}
+    </body>
+
+    <form method="POST" action="test.html">
+        <table>
+            <label for="name">snort rule : </label>
+            <select id="action">
+              <option>alert</option>
+              <option>log</option>
+              <option>pass</option>
+              <option>drop</option>
+              <option>reject</option>
+              <option>sdrop</option>
+            </select>  
+            <select id="protocol">
+                <option>tcp</option>
+                <option>udp</option>
+                <option>icmp</option>
+                <option>ip</option>
+                <option>any</option>
+            </select>
+            <input type="text" id="ScrIP"/> /
+            <input type="text" id="ScrPort"/>
+            <select id="direction">
+                <option>-&gt;</option>
+                <option>&lt;-</option>
+            </select>
+            <input type="text" id="DstIP"/> /
+            <input type="text" id="DstPort"/>
+            (<input type="text" id="option"/>)
+        </table>
+        <input type="button" value="add" onclick="showaddValues()"/>
+        <input type="button" value="delete" onclick="showdeleteValues()"/>
+    </form>
+
+    <script>
+    function showaddValues() {
+        const motion = 'add'
+        const action = document.getElementById("action").value;
+        const protocol = document.getElementById("protocol").value;
+        const ScrIP = document.getElementById("ScrIP").value;
+        const ScrPort = document.getElementById("ScrPort").value;
+        const direction = document.getElementById("direction").value;
+        const DstIP = document.getElementById("DstIP").value;
+        const DstPort = document.getElementById("DstPort").value;
+        const option = document.getElementById("option").value;
+        const data = {
+        'motion' : motion,
+        'action': action,
+        'protocol': protocol,
+        'ScrIP': ScrIP,
+        'ScrPort': ScrPort,
+        'direction': direction,
+        'DstIP': DstIP,
+        'DstPort': DstPort,
+        'option': option
+        };
+        fetch('http://127.0.0.1:5000/kante/rules/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then((response) => response.text())
+        .then((data) => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+        
+        console.log("------add------");
+        console.log("Action:", action);
+        console.log("Protocol:", protocol);
+        console.log("Source IP:", ScrIP);
+        console.log("Source Port:", ScrPort); 
+        console.log("Direction:", direction);
+        console.log("Destination IP:", DstIP);
+        console.log("Destination Port:", DstPort);
+        console.log("Option:", option);
+    }
+    function showdeleteValues() {
+        const motion = 'delete'
+        const action = document.getElementById("action").value;
+        const protocol = document.getElementById("protocol").value;
+        const ScrIP = document.getElementById("ScrIP").value;
+        const ScrPort = document.getElementById("ScrPort").value;
+        const direction = document.getElementById("direction").value;
+        const DstIP = document.getElementById("DstIP").value;
+        const DstPort = document.getElementById("DstPort").value;
+        const option = document.getElementById("option").value;
+        
+        const data = {
+        'motion' : motion,
+        'action': action,
+        'protocol': protocol,
+        'ScrIP': ScrIP,
+        'ScrPort': ScrPort,
+        'direction': direction,
+        'DstIP': DstIP,
+        'DstPort': DstPort,
+        'option': option
+        };
+        fetch('http://127.0.0.1:5000/kante/rules/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then((response) => response.text())
+        .then((data) => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+
+
+        console.log("------delete------");
+        console.log("Action:", action);
+        console.log("Protocol:", protocol);
+        console.log("Source IP:", ScrIP);
+        console.log("Source Port:", ScrPort);
+        console.log("Direction:", direction);
+        console.log("Destination IP:", DstIP);
+        console.log("Destination Port:", DstPort);
+        console.log("Option:", option);
+    }
+    </script>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      :root {
+        --bg: #f1f1f1;
+        --bg-black: #d6d6d6;
+        --gray: #555;
+      }
+
+      .layout {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 120px;
+        background-color: var(--bg);
+        position: fixed;
+        height: 100%;
+        overflow: auto;
+      }
+
+      .layout > li a {
+        display: block;
+        color: #000;
+        padding: 8px 16px;
+        text-decoration: none;
+      }
+
+      /* 수정 필요 */
+      .main {
+        padding: 16px 16px 16px calc(120px + 16px);
+      }
+
+      #snort-form {
+        margin-bottom: 20px;
+      }
+
+      #snort-form > h2 {
+        margin: 0 0 10px;
+      }
+
+      #snort-form > .snort-input {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #snort-form > .snort-input > select,
+      input {
+        padding: 5px;
+        font-size: 18px;
+        border-radius: 5px;
+        border: 1px solid var(--gray);
+      }
+
+      #snort-form > .snort-input > select {
+        line-height: 1.5;
+        background: #fff;
+      }
+
+      #snort-form > .snort-button {
+        margin-top: 10px;
+        width: 100%;
+        gap: 10px;
+      }
+      #snort-form > .snort-button > input[type='button']:hover {
+        cursor: pointer;
+        background: var(--bg-black);
+      }
+
+      .snort-rule {
+        margin-top: 10px;
+        width: 90%;
+        height: 300px;
+        border-radius: 15px;
+        padding: 15px;
+        background: var(--bg-black);
+        word-break: break-all;
+        overflow-y: auto;
+        white-space: pre;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      li a.active {
+        background-color: #555;
+        color: white;
+      }
+
+      li a:hover:not(.active) {
+        background-color: #555;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <input type = "hidden" {{value}}>
+    <ul class="layout">
+      <li><a href="../html/snmp.html">SNMP</a></li>
+      <li><a class="active" href="../html/snort.html">SNORT</a></li>
+      <li><a href="../html/alert.html">ALERT</a></li>
+    </ul>
+    <main class="main">
+      <section id="snort-form">
+        <h2>Snort Rule</h2>
+        <article class="snort-input">
+          <select id="action">
+            <option></option>
+            <option>alert</option>
+            <option>log</option>
+            <option>pass</option>
+            <option>drop</option>
+            <option>reject</option>
+            <option>sdrop</option>
+          </select>
+          <select id="protocol">
+            <option></option>
+            <option>tcp</option>
+            <option>udp</option>
+            <option>icmp</option>
+            <option>ip</option>
+            <option>any</option>
+          </select>
+          <input type="text" id="ScrIP" />
+          /
+          <input type="text" id="ScrPort" />
+          <select id="direction">
+            <option></option>
+            <option>-&gt;</option>
+            <option>&lt;-</option>
+          </select>
+          <input type="text" id="DstIP" />
+          /
+          <input type="text" id="DstPort" />
+          (<input type="text" id="option" />)
+        </article>
+        <article class="snort-button">
+          <input type="button" value="add" onclick="showaddValues()" />
+          <input type="button" value="delete" onclick="showdeleteValues()" />
+        </article>
+      </section>
+      <section class="snort-rule" id="add_rules">{{user_rule}}</section>
+      <section class="snort-rule" id="basic_rules">{{default_rule}}</section>
+    </main>
+
+    <script>
+      function showaddValues() {
+        const motion = 'add'
+        const action = document.getElementById('action').value;
+        const protocol = document.getElementById('protocol').value;
+        const ScrIP = document.getElementById('ScrIP').value;
+        const ScrPort = document.getElementById('ScrPort').value;
+        const direction = document.getElementById('direction').value;
+        const DstIP = document.getElementById('DstIP').value;
+        const DstPort = document.getElementById('DstPort').value;
+        const option = document.getElementById('option').value;
+        const data = {
+        'motion' : motion,
+        'action': action,
+        'protocol': protocol,
+        'ScrIP': ScrIP,
+        'ScrPort': ScrPort,
+        'direction': direction,
+        'DstIP': DstIP,
+        'DstPort': DstPort,
+        'option': option
+        };
+        fetch('http://127.0.0.1:5000/kante/rules/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then((response) => response.text())
+        .then((data) => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+        console.log('------add------');
+        console.log('Action:', action);
+        console.log('Protocol:', protocol);
+        console.log('Source IP:', ScrIP);
+        console.log('Source Port:', ScrPort);
+        console.log('Direction:', direction);
+        console.log('Destination IP:', DstIP);
+        console.log('Destination Port:', DstPort);
+        console.log('Option:', option);
+
+        location.reload();
+      }
+      function showdeleteValues() {
+        const motion = 'delete'
+        const action = document.getElementById('action').value;
+        const protocol = document.getElementById('protocol').value;
+        const ScrIP = document.getElementById('ScrIP').value;
+        const ScrPort = document.getElementById('ScrPort').value;
+        const direction = document.getElementById('direction').value;
+        const DstIP = document.getElementById('DstIP').value;
+        const DstPort = document.getElementById('DstPort').value;
+        const option = document.getElementById('option').value;
+        const data = {
+        'motion' : motion,
+        'action': action,
+        'protocol': protocol,
+        'ScrIP': ScrIP,
+        'ScrPort': ScrPort,
+        'direction': direction,
+        'DstIP': DstIP,
+        'DstPort': DstPort,
+        'option': option
+        };
+        fetch('http://127.0.0.1:5000/kante/rules/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then((response) => response.text())
+        .then((data) => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+
+        console.log('------delete------');
+        console.log('Action:', action);
+        console.log('Protocol:', protocol);
+        console.log('Source IP:', ScrIP);
+        console.log('Source Port:', ScrPort);
+        console.log('Direction:', direction);
+        console.log('Destination IP:', DstIP);
+        console.log('Destination Port:', DstPort);
+        console.log('Option:', option);
+        location.reload();
+      }
+
+//       document.querySelector('#add_rules').innerHTML = 'alert icmp any any -> any any (msg:"ICMP TEST"; sid:50001;)\nalert tcp any any -> any any (msg:"ICMP TEST"; sid:50002;)';
+//       document.querySelector('#basic_rules').innerHTML = `alert ( msg: "TAG_LOG_PKT"; sid: 1; gid: 2; rev: 1; metadata: rule-type preproc ; classtype:not-suspicious; )
+// alert ( msg: "BO_TRAFFIC_DETECT"; sid: 1; gid: 105; rev: 1; metadata: rule-type preproc, policy balanced-ips drop, policy security-ips drop ; classtype:trojan-activity; reference:cve,1999-0660; )
+// alert ( msg: "BO_CLIENT_TRAFFIC_DETECT"; sid: 2; gid: 105; rev: 1; metadata: rule-type preproc, policy balanced-ips drop, policy security-ips drop ; classtype:trojan-activity; reference:cve,1999-0660; )
+// alert ( msg: "BO_SERVER_TRAFFIC_DETECT"; sid: 3; gid: 105; rev: 1; metadata: rule-type preproc, policy balanced-ips drop, policy security-ips drop ; classtype:trojan-activity; reference:cve,1999-0660;)
+// alert ( msg: "BO_SNORT_BUFFER_ATTACK"; sid: 4; gid: 105; rev: 1; metadata: rule-type preproc, policy balanced-ips drop, policy security-ips drop ; classtype:trojan-activity; reference:cve,2005-3252; )
+// alert ( msg: "RPC_FRAG_TRAFFIC"; sid: 1; gid: 106; rev: 1; metadata: rule-type preproc, service sunrpc ; classtype:protocol-command-decode; )
+// alert ( msg: "RPC_MULTIPLE_RECORD"; sid: 2; gid: 106; rev: 1; metadata: rule-type preproc, service sunrpc ; classtype:protocol-command-decode; )
+// alert ( msg: "RPC_LARGE_FRAGSIZE"; sid: 3; gid: 106; rev: 1; metadata: rule-type preproc, service sunrpc, policy security-ips alert ; classtype:bad-unknown; )
+// alert ( msg: "RPC_INCOMPLETE_SEGMENT"; sid: 4; gid: 106; rev: 1; metadata: rule-type preproc, service sunrpc, policy security-ips alert ; classtype:bad-unknown; )
+// alert ( msg: "RPC_ZERO_LENGTH_FRAGMENT"; sid: 5; gid: 106; rev: 1; metadata: rule-type preproc, service sunrpc, policy security-ips alert ; classtype:bad-unknown; )
+// alert ( msg: "ARPSPOOF_UNICAST_ARP_REQUEST"; sid: 1; gid: 112; rev: 1; metadata: rule-type preproc ; classtype:protocol-command-decode; )
+// alert ( msg: "ARPSPOOF_ETHERFRAME_ARP_MISMATCH_SRC"; sid: 2; gid: 112; rev: 1; metadata: rule-type preproc ; classtype:bad-unknown; )
+// alert ( msg: "ARPSPOOF_ETHERFRAME_ARP_MISMATCH_DST"; sid: 3; gid: 112; rev: 1; metadata: rule-type preproc ; classtype:bad-unknown; )
+// alert ( msg: "ARPSPOOF_ARP_CACHE_OVERWRITE_ATTACK"; sid: 4; gid: 112; rev: 1; metadata: rule-type preproc ; classtype:bad-unknown; )
+// alert ( msg: "HI_CLIENT_ASCII"; sid: 1; gid: 119; rev: 1; metadata: rule-type preproc, service http ; classtype:not-suspicious; reference:cve,2009-1535; reference:url,www.microsoft.com/technet/security/bulletin/ms09-020.mspx; reference:url,docs.idsresearch.org/http_ids_evasions.pdf; )
+// alert ( msg: "HI_CLIENT_DOUBLE_DECODE"; sid: 2; gid: 119; rev: 1; metadata: rule-type preproc, service http ; classtype:not-suspicious; reference:cve,2009-1122; reference:url,www.microsoft.com/technet/security/bulletin/ms09-020.mspx; )
+// alert ( msg: "HI_CLIENT_U_ENCODE"; sid: 3; gid: 119; rev: 1; metadata: rule-type preproc, service http ; classtype:not-suspicious; )
+// alert ( msg: "HI_CLIENT_BARE_BYTE"; sid: 4; gid: 119; rev: 1; metadata: rule-type preproc, service http ; classtype:not-suspicious; )
+// alert ( msg: "HI_CLIENT_BASE36"; sid: 5; gid: 119; rev: 1; metadata: rule-type preproc, service http ; classtype:bad-unknown; )`;
+    </script>
+  </body>
 </html>
