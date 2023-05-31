@@ -24,13 +24,13 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'mysite','templates')
 SECRET_KEY = "django-insecure-)=20igl*ukbdu#c%m3$hp-hp1&!y%ae_f)v$lv*1*=!fh#dy+g"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*',
     ".ap-northeast-2.compute.amazonaws.com",
     ".securitycap.site",
     "3.35.249.218"
-]
+] # daphne mysite.asgi:application
 
 
 # Application definition
