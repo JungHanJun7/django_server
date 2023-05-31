@@ -1,156 +1,10 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-	<title>Test Page</title>
-</head>
-<body>
-	<h1>user rule :{{ user_rule }}</h1>
-	<h2>default_rule :{{ default_rule }}</h2>
-</body>
-</html> -->
-<!-- <!DOCTYPE html>
-<html>
-    <body>
-        {{value}}
-    </body>
-
-    <form method="POST" action="test.html">
-        <table>
-            <label for="name">snort rule : </label>
-            <select id="action">
-              <option>alert</option>
-              <option>log</option>
-              <option>pass</option>
-              <option>drop</option>
-              <option>reject</option>
-              <option>sdrop</option>
-            </select>  
-            <select id="protocol">
-                <option>tcp</option>
-                <option>udp</option>
-                <option>icmp</option>
-                <option>ip</option>
-                <option>any</option>
-            </select>
-            <input type="text" id="ScrIP"/> /
-            <input type="text" id="ScrPort"/>
-            <select id="direction">
-                <option>-&gt;</option>
-                <option>&lt;-</option>
-            </select>
-            <input type="text" id="DstIP"/> /
-            <input type="text" id="DstPort"/>
-            (<input type="text" id="option"/>)
-        </table>
-        <input type="button" value="add" onclick="showaddValues()"/>
-        <input type="button" value="delete" onclick="showdeleteValues()"/>
-    </form>
-
-    <script>
-    function showaddValues() {
-        const motion = 'add'
-        const action = document.getElementById("action").value;
-        const protocol = document.getElementById("protocol").value;
-        const ScrIP = document.getElementById("ScrIP").value;
-        const ScrPort = document.getElementById("ScrPort").value;
-        const direction = document.getElementById("direction").value;
-        const DstIP = document.getElementById("DstIP").value;
-        const DstPort = document.getElementById("DstPort").value;
-        const option = document.getElementById("option").value;
-        const data = {
-        'motion' : motion,
-        'action': action,
-        'protocol': protocol,
-        'ScrIP': ScrIP,
-        'ScrPort': ScrPort,
-        'direction': direction,
-        'DstIP': DstIP,
-        'DstPort': DstPort,
-        'option': option
-        };
-        fetch('http://127.0.0.1:5000/kante/rules/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then((response) => response.text())
-        .then((data) => {
-            console.log('Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-        
-        console.log("------add------");
-        console.log("Action:", action);
-        console.log("Protocol:", protocol);
-        console.log("Source IP:", ScrIP);
-        console.log("Source Port:", ScrPort); 
-        console.log("Direction:", direction);
-        console.log("Destination IP:", DstIP);
-        console.log("Destination Port:", DstPort);
-        console.log("Option:", option);
-    }
-    function showdeleteValues() {
-        const motion = 'delete'
-        const action = document.getElementById("action").value;
-        const protocol = document.getElementById("protocol").value;
-        const ScrIP = document.getElementById("ScrIP").value;
-        const ScrPort = document.getElementById("ScrPort").value;
-        const direction = document.getElementById("direction").value;
-        const DstIP = document.getElementById("DstIP").value;
-        const DstPort = document.getElementById("DstPort").value;
-        const option = document.getElementById("option").value;
-        
-        const data = {
-        'motion' : motion,
-        'action': action,
-        'protocol': protocol,
-        'ScrIP': ScrIP,
-        'ScrPort': ScrPort,
-        'direction': direction,
-        'DstIP': DstIP,
-        'DstPort': DstPort,
-        'option': option
-        };
-        fetch('http://127.0.0.1:5000/kante/rules/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then((response) => response.text())
-        .then((data) => {
-            console.log('Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-
-
-        console.log("------delete------");
-        console.log("Action:", action);
-        console.log("Protocol:", protocol);
-        console.log("Source IP:", ScrIP);
-        console.log("Source Port:", ScrPort);
-        console.log("Direction:", direction);
-        console.log("Destination IP:", DstIP);
-        console.log("Destination Port:", DstPort);
-        console.log("Option:", option);
-    }
-    </script>
-</html> -->
-
 <!DOCTYPE html>
 <html>
   <head>
     <style>
       :root {
-        --bg: #f1f1f1;
-        --bg-black: #d6d6d6;
+        --bg: #353535;
+        --bg-black: #1e1d1d;
         --gray: #555;
       }
 
@@ -167,7 +21,7 @@
 
       .layout > li a {
         display: block;
-        color: #000;
+        color: #eeeded;
         padding: 8px 16px;
         text-decoration: none;
       }
@@ -208,26 +62,55 @@
         margin-top: 10px;
         width: 100%;
         gap: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #snort-form > .snort-button > input[type="button"] {
+        width: 250px; /* 원하는 너비 값으로 조정 */
+        height: 50px; /* 원하는 높이 값으로 조정 */
+        font-size: 24px; /* 원하는 텍스트 크기로 설정 */
       }
       #snort-form > .snort-button > input[type='button']:hover {
         cursor: pointer;
-        background: var(--bg-black);
+        background: rgb(131, 128, 128);
+        width: 250px; /* 원하는 너비 값으로 조정 */
+        height: 50px; /* 원하는 높이 값으로 조정 */
+        font-size: 24px; /* 원하는 텍스트 크기로 설정 */
+      }
+
+      .custom-button {
+        margin: 10px;
+        padding: 10px 20px;
+        background-color: #67a6d9;
+        color: #fff;
+        font-weight: bold;
+        border: none;
+        border-radius: 32px;
+      }
+      .delete-button {
+        margin: 10px;
       }
 
       .snort-rule {
         margin-top: 10px;
+        position: relative;
         width: 90%;
         height: 300px;
         border-radius: 15px;
         padding: 15px;
-        background: var(--bg-black);
+        font-size: 20px;
+        background: #676767;
         word-break: break-all;
         overflow-y: auto;
         white-space: pre;
+        color: #fdfdfd;
       }
 
       body {
         margin: 0;
+        background-color: #1e1d1d;
+        color: #fff;
       }
 
       li a.active {
@@ -239,21 +122,90 @@
         background-color: #555;
         color: white;
       }
+      .warning-container {
+        position: fixed;
+        height: 60px;
+        left: 800px;
+        background-color: #f44336;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .warning-container img {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+      }
+      .close-button{
+        font-weight: bold;
+        background-color: #f44336;
+        border: 1px solid #f44336;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+      img {
+        width: 100%;
+        height: auto;
+      }
+
     </style>
   </head>
   <body>
+    <div class="warning-container" onclick="redirectToAlert(this)">
+      <!-- <img src="alert-circle-outline.svg" alt="Warning Icon"> -->
+      <button class="close-button" onclick="closeWarning(event)">X</button>
+      <span>중요한 안내 메시지입니다!</span>
+    </div>
+    <script>
+      // WebSocket 연결 설정
+      var socket = new WebSocket("ws://127.0.0.1:8000/ws/snmp/");
+    
+      // 초기 상태에서 경고창 숨김
+      var warningContainer = document.querySelector(".warning-container");
+      warningContainer.style.display = "none";
+    
+      setInterval(function() {
+        var message = "경고 상태 확인"; // 서버에 보낼 메시지
+        socket.send(message);
+      }, 2000);
+    
+      // 서버에서 메시지 수신
+      socket.onmessage = function(event) {
+        var serverResponse = event.data; // 서버에서 받은 응답
+        if (serverResponse === "변경O") {
+          warningContainer.style.display = "flex";
+        }
+      };
+    
+      function redirectToAlert(element) {
+        window.location.href = "alert.html";
+        warningContainer.style.display = "none";
+      }
+      function closeWarning(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var warningContainer = document.querySelector(".warning-container");
+        warningContainer.style.display = "none";
+      }
+    </script>
     <input type = "hidden" {{value}}>
     <ul class="layout">
-      <li><a href="../html/snmp.html">SNMP</a></li>
-      <li><a class="active" href="../html/snort.html">SNORT</a></li>
-      <li><a href="../html/alert.html">ALERT</a></li>
+      <li><a href="/pogba/socket">Network Monitoring</a></li>
+      <li><a class="active" href="/kante/rules">SNORT Rule</a></li>
+      <li><a href="/pogba/alert">Warning</a></li>
     </ul>
     <main class="main">
       <section id="snort-form">
         <h2>Snort Rule</h2>
         <article class="snort-input">
           <select id="action">
-            <option></option>
+            <option disabled selected>Action</option>
             <option>alert</option>
             <option>log</option>
             <option>pass</option>
@@ -261,34 +213,42 @@
             <option>reject</option>
             <option>sdrop</option>
           </select>
+        
           <select id="protocol">
-            <option></option>
+            <option disabled selected>Protocol</option>
             <option>tcp</option>
             <option>udp</option>
             <option>icmp</option>
             <option>ip</option>
             <option>any</option>
           </select>
-          <input type="text" id="ScrIP" />
+          <input type="text" id="ScrIP" placeholder="ScrIP"/>
           /
-          <input type="text" id="ScrPort" />
+          <input type="text" id="ScrPort" placeholder="ScrPort"/>
           <select id="direction">
-            <option></option>
+            <option disabled selected>Direction</option>
             <option>-&gt;</option>
             <option>&lt;-</option>
           </select>
-          <input type="text" id="DstIP" />
+          <input type="text" id="DstIP" placeholder="DstIP"/>
           /
-          <input type="text" id="DstPort" />
-          (<input type="text" id="option" />)
+          <input type="text" id="DstPort" placeholder="DstPort"/>
+          (<input type="text" id="option" placeholder="Option"/>)
         </article>
+
         <article class="snort-button">
-          <input type="button" value="add" onclick="showaddValues()" />
-          <input type="button" value="delete" onclick="showdeleteValues()" />
+          <input type="button" value="Add Rule" class="custom-button" onclick="showaddValues()" />
+        </article>
+        <div>
+          {% load static %}
+          <img src="{% static 'rule.jpg' %}" alt="My image">
+          <!-- <img src="rule.png" alt="Introduce Snort rule"> -->
+        </div>
+        <section class="snort-rule" id="add_rules">{{user_rule}}</section>
+        <article class="snort-button">
+          <input type="button" value="Delete Rule" class="custom-button delete-button" onclick="showdeleteValues()" />
         </article>
       </section>
-      <section class="snort-rule" id="add_rules">{{user_rule}}</section>
-      <section class="snort-rule" id="basic_rules">{{default_rule}}</section>
     </main>
 
     <script>
@@ -314,18 +274,18 @@
         'option': option
         };
         fetch('http://127.0.0.1:5000/kante/rules/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then((response) => response.text())
-        .then((data) => {
-            console.log('Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+          })
+          .then((response) => response.text())
+          .then((data) => {
+              console.log('Success:', data);
+          })
+          .catch((error) => {
+              console.error('Error:', error);
         });
         console.log('------add------');
         console.log('Action:', action);
@@ -337,44 +297,64 @@
         console.log('Destination Port:', DstPort);
         console.log('Option:', option);
 
-        location.reload();
+        setTimeout(function() {
+          location.reload();
+        }, Math.random() * 1000 + 1000); // 1~2초 사이의 랜덤한 시간으로 설정
       }
       function showdeleteValues() {
-        const motion = 'delete'
-        const action = document.getElementById('action').value;
-        const protocol = document.getElementById('protocol').value;
-        const ScrIP = document.getElementById('ScrIP').value;
-        const ScrPort = document.getElementById('ScrPort').value;
-        const direction = document.getElementById('direction').value;
-        const DstIP = document.getElementById('DstIP').value;
-        const DstPort = document.getElementById('DstPort').value;
-        const option = document.getElementById('option').value;
+        const motion = 'Delete Rule'
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+
         const data = {
-        'motion' : motion,
-        'action': action,
-        'protocol': protocol,
-        'ScrIP': ScrIP,
-        'ScrPort': ScrPort,
-        'direction': direction,
-        'DstIP': DstIP,
-        'DstPort': DstPort,
-        'option': option
+          'motion': motion,
+          'action': "",
+          'protocol': "",
+          'ScrIP': "",
+          'ScrPort': "",
+          'direction': "",
+          'DstIP': "",
+          'DstPort': "",
+          'option': ""
         };
-        fetch('http://127.0.0.1:5000/kante/rules/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then((response) => response.text())
-        .then((data) => {
-            console.log('Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
+
+        checkboxes.forEach((checkbox) => {
+          const ruleComponents = checkbox.value.split(' ');
+          data.action = ruleComponents[0];
+          data.protocol = ruleComponents[1];
+          data.ScrIP = ruleComponents[2];
+          data.ScrPort = ruleComponents[3];
+          data.direction = ruleComponents[4].replace(/-&gt;|&lt;-/g, function(match) {
+            if (match === '-&gt;') {
+              return '->';
+            } else if (match === '&lt;-') {
+              return '<-';
+            }
+          });
+          data.DstIP = ruleComponents[5];
+          data.DstPort = ruleComponents[6];
+          data.option = extractOptionFromRule(ruleComponents);
         });
 
+        fetch('http://127.0.0.1:5000/kante/rules/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            console.log('Success:', data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+
+        console.log('------delete------');
+        console.log('deleted rule:');
+        checkboxes.forEach((checkbox) => {
+          console.log(checkbox.value);
+        });
         console.log('------delete------');
         console.log('Action:', action);
         console.log('Protocol:', protocol);
@@ -384,29 +364,56 @@
         console.log('Destination IP:', DstIP);
         console.log('Destination Port:', DstPort);
         console.log('Option:', option);
-        location.reload();
+
+        setTimeout(function() {
+          location.reload();
+        }, Math.random() * 1000 + 1000); // 1~2초 사이의 랜덤한 시간으로 설정
       }
 
-//       document.querySelector('#add_rules').innerHTML = 'alert icmp any any -> any any (msg:"ICMP TEST"; sid:50001;)\nalert tcp any any -> any any (msg:"ICMP TEST"; sid:50002;)';
-//       document.querySelector('#basic_rules').innerHTML = `alert ( msg: "TAG_LOG_PKT"; sid: 1; gid: 2; rev: 1; metadata: rule-type preproc ; classtype:not-suspicious; )
-// alert ( msg: "BO_TRAFFIC_DETECT"; sid: 1; gid: 105; rev: 1; metadata: rule-type preproc, policy balanced-ips drop, policy security-ips drop ; classtype:trojan-activity; reference:cve,1999-0660; )
-// alert ( msg: "BO_CLIENT_TRAFFIC_DETECT"; sid: 2; gid: 105; rev: 1; metadata: rule-type preproc, policy balanced-ips drop, policy security-ips drop ; classtype:trojan-activity; reference:cve,1999-0660; )
-// alert ( msg: "BO_SERVER_TRAFFIC_DETECT"; sid: 3; gid: 105; rev: 1; metadata: rule-type preproc, policy balanced-ips drop, policy security-ips drop ; classtype:trojan-activity; reference:cve,1999-0660;)
-// alert ( msg: "BO_SNORT_BUFFER_ATTACK"; sid: 4; gid: 105; rev: 1; metadata: rule-type preproc, policy balanced-ips drop, policy security-ips drop ; classtype:trojan-activity; reference:cve,2005-3252; )
-// alert ( msg: "RPC_FRAG_TRAFFIC"; sid: 1; gid: 106; rev: 1; metadata: rule-type preproc, service sunrpc ; classtype:protocol-command-decode; )
-// alert ( msg: "RPC_MULTIPLE_RECORD"; sid: 2; gid: 106; rev: 1; metadata: rule-type preproc, service sunrpc ; classtype:protocol-command-decode; )
-// alert ( msg: "RPC_LARGE_FRAGSIZE"; sid: 3; gid: 106; rev: 1; metadata: rule-type preproc, service sunrpc, policy security-ips alert ; classtype:bad-unknown; )
-// alert ( msg: "RPC_INCOMPLETE_SEGMENT"; sid: 4; gid: 106; rev: 1; metadata: rule-type preproc, service sunrpc, policy security-ips alert ; classtype:bad-unknown; )
-// alert ( msg: "RPC_ZERO_LENGTH_FRAGMENT"; sid: 5; gid: 106; rev: 1; metadata: rule-type preproc, service sunrpc, policy security-ips alert ; classtype:bad-unknown; )
-// alert ( msg: "ARPSPOOF_UNICAST_ARP_REQUEST"; sid: 1; gid: 112; rev: 1; metadata: rule-type preproc ; classtype:protocol-command-decode; )
-// alert ( msg: "ARPSPOOF_ETHERFRAME_ARP_MISMATCH_SRC"; sid: 2; gid: 112; rev: 1; metadata: rule-type preproc ; classtype:bad-unknown; )
-// alert ( msg: "ARPSPOOF_ETHERFRAME_ARP_MISMATCH_DST"; sid: 3; gid: 112; rev: 1; metadata: rule-type preproc ; classtype:bad-unknown; )
-// alert ( msg: "ARPSPOOF_ARP_CACHE_OVERWRITE_ATTACK"; sid: 4; gid: 112; rev: 1; metadata: rule-type preproc ; classtype:bad-unknown; )
-// alert ( msg: "HI_CLIENT_ASCII"; sid: 1; gid: 119; rev: 1; metadata: rule-type preproc, service http ; classtype:not-suspicious; reference:cve,2009-1535; reference:url,www.microsoft.com/technet/security/bulletin/ms09-020.mspx; reference:url,docs.idsresearch.org/http_ids_evasions.pdf; )
-// alert ( msg: "HI_CLIENT_DOUBLE_DECODE"; sid: 2; gid: 119; rev: 1; metadata: rule-type preproc, service http ; classtype:not-suspicious; reference:cve,2009-1122; reference:url,www.microsoft.com/technet/security/bulletin/ms09-020.mspx; )
-// alert ( msg: "HI_CLIENT_U_ENCODE"; sid: 3; gid: 119; rev: 1; metadata: rule-type preproc, service http ; classtype:not-suspicious; )
-// alert ( msg: "HI_CLIENT_BARE_BYTE"; sid: 4; gid: 119; rev: 1; metadata: rule-type preproc, service http ; classtype:not-suspicious; )
-// alert ( msg: "HI_CLIENT_BASE36"; sid: 5; gid: 119; rev: 1; metadata: rule-type preproc, service http ; classtype:bad-unknown; )`;
+      function extractOptionFromRule(ruleComponents) {
+        const optionRegex = /\((.*?)\)/; // ( ) 안에 있는 내용을 추출하기 위한 정규식
+        const optionMatch = ruleComponents.join(' ').match(optionRegex);
+        if (optionMatch) {
+          return optionMatch[1]; // 정규식 매치 결과의 첫 번째 그룹을 반환
+        }
+        return '';
+      }
+
+      function createCheckboxes() {
+        const addRules = document.querySelector('#add_rules');
+        const rules = addRules.innerHTML.split('\n');
+
+        const checkboxContainer = document.createElement('div');
+
+        rules.forEach((rule, index) => {
+          if (rule.trim() !== '') {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = rule.trim();
+            checkbox.id = `checkbox${index}`;
+
+            const label = document.createElement('label');
+            label.htmlFor = `checkbox${index}`;
+            label.textContent = rule.trim().replace(/-&gt;|&lt;-/g, function(match) {
+              if (match === '-&gt;') {
+                return '->';
+              } else if (match === '&lt;-') {
+                return '<-';
+              }
+            });
+
+            checkboxContainer.appendChild(checkbox);
+            checkboxContainer.appendChild(label);
+            checkboxContainer.appendChild(document.createElement('br'));
+          }
+        });
+
+        addRules.innerHTML = '';
+        addRules.appendChild(checkboxContainer);
+      }
+
+      createCheckboxes();
+      
     </script>
   </body>
 </html>
