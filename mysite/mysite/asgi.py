@@ -14,7 +14,7 @@ from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 import pogba.routing
-import dataapi.routing
+
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 
@@ -26,8 +26,7 @@ application = ProtocolTypeRouter({
   "http": get_asgi_application(),
   "websocket": AuthMiddlewareStack(
         URLRouter(
-            pogba.routing.websocket_urlpatterns+
-            dataapi.routing.websocket_urlpatterns
+            pogba.routing.websocket_urlpatterns 
 
         )
     ),

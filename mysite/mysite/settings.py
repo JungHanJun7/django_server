@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'mysite','templates')
@@ -35,7 +36,6 @@ ALLOWED_HOSTS = ['*',
 
 INSTALLED_APPS = [
     'channels',
-    'dataapi',
     'pogba',
     'kante',
     "django.contrib.admin",
@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'main',
     'rest_framework',
-
 ]
 
 MIDDLEWARE = [
@@ -153,4 +152,10 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# # Default primary key field type
+# # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
+
+# DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

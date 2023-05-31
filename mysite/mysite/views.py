@@ -33,6 +33,6 @@ def snmp_info(request):
     )
     # 가져온 정보 Context 변수에 저장
     context = {}
-    if varBinds:
+    if varBinds: 
         context['sys_descr'] = varBinds[0][1]
     return render(request, 'snmp_info.html', context)  

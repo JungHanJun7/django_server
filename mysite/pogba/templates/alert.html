@@ -1,0 +1,152 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0;
+        background-color: #1e1d1d;
+        color: #fff;
+      }
+
+      li a.active {
+        background-color: #555;
+        color: white;
+      }
+
+      li a:hover:not(.active) {
+        background-color: #555;
+        color: white;
+      }
+      :root {
+        --bg: #353535;
+        --bg-black: #1e1d1d;
+        --gray: #555;
+      }
+
+      .layout {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 120px;
+        background-color: var(--bg);
+        position: fixed;
+        height: 100%;
+        overflow: auto;
+      }
+
+      .layout > li a {
+        display: block;
+        color: #ffffff;
+        padding: 8px 16px;
+        text-decoration: none;
+      }
+      .main {
+        padding: 16px 16px 16px calc(120px + 16px);
+      }
+
+      #alert-form {
+        margin-bottom: 20px;
+      }
+
+      #alert-form > h2 {
+        margin: 0 0 10px;
+      }
+      
+      .row {
+        display: flex;
+        gap: 20px;
+        margin: 20px;
+      }
+      .alert-page {
+        margin-top: 10px;
+        width: 90%;
+        height: 300px;
+        padding: 15px;
+        background: var(--bg-black);
+        word-break: break-all;
+        overflow-y: hidden;
+        white-space: pre;
+      }
+      .alert-page:hover {
+        overflow-y: auto; /* 내용이 넘칠 때 스크롤 표시 */
+      }
+      h3 {
+        margin: 0;
+      }
+      .extra-box {
+        width: 700px;
+        height: 55px;
+        color: #000;
+        background-color: rgb(243, 240, 240);
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="layout">
+      <li><a href="/pogba/socket">Network Monitoring</a></li>
+      <li><a href="/kante/rules">SNORT Rule</a></li>
+      <li><a class="active" href="/pogba/alert">Warning</a></li>
+    </ul>
+    <main class="main">
+        <h2>Warning</h2>
+      <section id="alert-form">
+
+        <div class="row">
+          <article class="">
+            <div class="extra">
+              <div class="extra-box" style="font-weight: bolder;"><span style="font-size: 24px;">&nbsp;&nbsp;TCP</span>&nbsp;sid&nbsp;cid&nbsp;sport&nbsp;dport&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;seq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestamp</div>
+            </div>
+            <section class="alert-page" id="tcp">{{tcp}}</section>
+          </article>
+  
+          <article class="">
+            <div class="extra">
+              <div class="extra-box" style="font-weight: bolder;"><span style="font-size: 24px;">&nbsp;&nbsp;UDP</span>&nbsp;sid&nbsp;cid&nbsp;sport&nbsp;dport&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestamp</div>
+            </div>
+            <section class="alert-page" id="udp">{{udp}}</section>
+          </article>
+        </div>
+
+        <div class="row">
+          <article class="">
+            <div class="extra">
+              <div class="extra-box" style="font-weight: bolder;"><span style="font-size: 24px;">&nbsp;&nbsp;ICMP</span>&nbsp;sidcid&nbsp;type&nbsp;&nbsp;&nbsp; timestamp</div>
+            </div>
+            <section class="alert-page" id="icmp">{{icmp}}</section>
+          </article>
+  
+          <article class="">
+            <div class="extra">
+              <div class="extra-box" style="font-weight: bolder;"><span style="font-size: 24px;">&nbsp;&nbsp;IP</span>&nbsp;sid&nbsp;cid&nbsp;&nbsp;&nbsp;&nbsp;src&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dst&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ttl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestamp</div>
+            </div>
+            <section class="alert-page" id="ip">{{ip}}</section>
+          </article>
+        </div>
+
+      </section>
+      <script>
+        var socket = new WebSocket("ws://127.0.0.1:8000/ws/snmp/"); // 웹소켓 서버 주소
+
+        setInterval(function() {
+        var message = "경고 상태 확인"; // 서버에 보낼 메시지
+        socket.send(message);
+        }, 5000);
+
+        socket.onmessage = function(event) {
+          var serverResponse = event.data; // 서버에서 받은 응답
+
+          if (serverResponse === "변경O") {
+            location.reload(); // 페이지 새로고침
+          }
+          location.reload();
+        };
+      </script>
+    </main>
+    <p></p>
+  </body>
+</html>
