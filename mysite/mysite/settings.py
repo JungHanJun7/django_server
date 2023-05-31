@@ -107,7 +107,7 @@ DATABASES = {
         'USER' : 'admin', # DB User
         'PASSWORD' :'Junghanjoon980504', # Password
         'HOST': 'database-1.cd0beaez3lwz.ap-northeast-2.rds.amazonaws.com', # 생성한 데이터베이스 엔드포인트
-        'PORT': '3306', # 데이터베이스 포트
+        'PORT': '3306', # 데이터베이스 포트 sg-04e51afb8f3537621 (launch-wizard-4)
         'OPTIONS':{
             'init_command' : "SET sql_mode='STRICT_TRANS_TABLES'"
         }
