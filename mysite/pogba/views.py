@@ -1,13 +1,9 @@
 from django.shortcuts import render
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import PogbaSerializer
 from pysnmp.hlapi import *
 
 from django.core.cache import cache
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-#from .models import Message    
+from django.views.decorators.csrf import csrf_exempt  
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import socket
@@ -39,6 +35,7 @@ def alert(request):
         # 각 행을 개행 문자로 연결하고, 이를 컨텍스트 변수에 저장
         context['tcp'] = '\n'.join(tcp_str)
 
+        # UDP에 대한 정보를 가져오는 쿼리를 실행하고 그 결과를 context에 저장
         with connection.cursor() as cursor:
             cursor.execute("""
             SELECT t.sid, t.cid, t.udp_sport, t.udp_dport, e.timestamp
@@ -51,6 +48,7 @@ def alert(request):
         udp_str.reverse()
         context['udp'] = '\n'.join(udp_str)
 
+        # ICMP 대한 정보를 가져오는 쿼리를 실행하고 그 결과를 context에 저장
         with connection.cursor() as cursor:
             cursor.execute("""
             SELECT t.sid, t.cid, t.icmp_type, e.timestamp
@@ -62,18 +60,7 @@ def alert(request):
         icmp_str = [' '.join(map(str, result)) for result in icmp_results]
         icmp_str.reverse()
         context['icmp'] = '\n'.join(icmp_str)
-
-        # with connection.cursor() as cursor:
-        #     cursor.execute("""
-        #     SELECT t.sid, t.cid, t.ip_src, t.ip_dst, ip_ttl, e.timestamp
-        #     FROM iphdr t
-        #     JOIN event e ON t.cid = e.cid
-        #     """)
-        #     ip_results = cursor.fetchall()
-
-        # ip_str = [' '.join(map(str, result)) for result in ip_results]
-        # ip_str.reverse()
-        # context['ip'] = '\n'.join(ip_str)
+    # IP 대한 정보를 가져오는 쿼리를 실행하고 그 결과를 context에 저장
     with connection.cursor() as cursor:
         cursor.execute("""
         SELECT t.sid, t.cid, t.ip_src, t.ip_dst, ip_ttl, e.timestamp
@@ -82,6 +69,7 @@ def alert(request):
         """)
         ip_results = cursor.fetchall()
 
+        # ip_src 와 ip_dst 는 숫자로 되어 있으므로, 이를 사람이 읽기 쉬운 형태로 변환
         ip_str = []
         for result in ip_results:
             ip_src_dec = result[2]  # Assuming ip_src is at index 2

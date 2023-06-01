@@ -170,28 +170,53 @@
       var warningContainer = document.querySelector(".warning-container");
       warningContainer.style.display = "none";
     
+      var alertShown = false; // 경고창이 표시되었는지 여부를 저장하는 변수
+    
+      window.onload = function() {
+        // 이전 경고 상태를 확인하여 경고창을 표시하거나 숨깁니다.
+        if (localStorage.getItem('alertShown') === 'true') {
+          warningContainer.style.display = "flex";
+          alertShown = true;
+        }
+      }
+    
+      // 2초마다 웹소켓으로 문자열 전송
       setInterval(function() {
         var message = "경고 상태 확인"; // 서버에 보낼 메시지
         socket.send(message);
-      }, 2000);
+      },2000);
     
       // 서버에서 메시지 수신
       socket.onmessage = function(event) {
         var serverResponse = event.data; // 서버에서 받은 응답
         if (serverResponse === "변경O") {
-          warningContainer.style.display = "flex";
-        }
+          if (!alertShown) {
+            warningContainer.style.display = "flex";
+            alertShown = true;
+            localStorage.setItem('alertShown', 'true');
+          }
+        } 
       };
     
       function redirectToAlert(element) {
-        window.location.href = "alert.html";
+        // 경고창 숨기기 전에 서버에 상태 변경 알림
+        // 경고창 숨기기
         warningContainer.style.display = "none";
+        alertShown = false; // 경고창이 사라졌으므로 변수를 초기화
+        // 상태를 localStorage에 저장
+        localStorage.setItem('alertShown', 'false');
+        // 페이지 이동
+        window.location.href = "/pogba/alert";
       }
+    
       function closeWarning(event) {
         event.preventDefault();
         event.stopPropagation();
-        var warningContainer = document.querySelector(".warning-container");
+        // 경고창 숨기기 전에 서버에 상태 변경 알림
         warningContainer.style.display = "none";
+        alertShown = false; // 경고창이 사라졌으므로 변수를 초기화
+        // 상태를 localStorage에 저장
+        localStorage.setItem('alertShown', 'false');
       }
     </script>
     <input type = "hidden" {{value}}>

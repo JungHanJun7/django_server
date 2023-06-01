@@ -75,7 +75,6 @@ class SnmpConsumer(WebsocketConsumer):
         else :
             # 현재 event 객체의 개수를 저장
             current_event_count = event.objects.all().count()
-
             # 이전 event 객체 개수와 현재 event 객체 개수를 비교하여 변경사항이 있는지 확인
             if self.previous_event_count != current_event_count:
                 self.previous_event_count = current_event_count
